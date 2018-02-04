@@ -1,0 +1,26 @@
+'use strict';
+
+const mongoose = require('mongoose');
+
+var UserSchema = new mongoose.Schema({
+  score: {
+    type: String,
+    default: null
+  }
+});
+
+UserSchema.pre('save', function(next) {
+    if (!this.createdOn) {
+        this.createdOn = new Date();
+    }
+    next();
+});
+
+UserSchema.pre('validate', function(next) {
+    if (this.isModified('createdOn')) {
+        this.invalidate('createdOn');
+    }
+    next();
+});
+
+module.exports = mongoose.model('Users', UserSchema);
